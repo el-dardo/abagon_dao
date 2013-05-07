@@ -62,19 +62,28 @@ abstract class DaoImplementation {
 }
 
 /**
- * All model entity objects MUST implement this class
+ * All model entity objects MUST implement this class. The [id] field is always
+ * as [String] and it is the responsibility of the specific abagon_dao 
+ * implementation to convert it to/from database's native type. It is also the
+ * responsibility of the abagon_dao implementation to auto-generate it when a
+ * new [ModelEntity] object is persisted to the database.
  */
-abstract class ModelEntity<ID> {
-  ID get id;
+abstract class ModelEntity {
+  String get id;
 }
 
 /**
  * All DAO objects must implement this class
  */
-abstract class Dao<T extends ModelEntity,ID> {
+abstract class Dao<T extends ModelEntity> {
   Future<List<T>> findAll();
-  Future<T> getById( ID id );
-  Future<ID> save( T entity );
+  Future<T> getById( String id );
+  /**
+   * Saves an existing [ModelEntity] or creates a new one in the database. The
+   * behavior depends on the [entity]'s id being informed or not. The method
+   * returns the id of the saved [entity] whether it was created or updated.
+   */
+  Future<String> save( T entity );
   Future delete( T entity );
 }
 
