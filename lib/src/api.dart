@@ -62,14 +62,14 @@ abstract class DaoImplementation {
 }
 
 /**
- * All model entity objects MUST implement this class. The [id] field is always
- * as [String] and it is the responsibility of the specific abagon_dao 
- * implementation to convert it to/from database's native type. It is also the
- * responsibility of the abagon_dao implementation to auto-generate it when a
- * new [ModelEntity] object is persisted to the database.
+ * All model entity objects MUST implement this class. The [uniqueId] field is 
+ * always returned as [String] and it is the responsibility of the specific 
+ * abagon_dao implementation to convert it to/from database's native type. It is 
+ * also the responsibility of the abagon_dao implementation to auto-generate it 
+ * when a new [ModelEntity] object is persisted to the database.
  */
 abstract class ModelEntity {
-  String get id;
+  String get uniqueId;
 }
 
 /**
