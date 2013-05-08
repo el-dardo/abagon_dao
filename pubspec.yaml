@@ -1,7 +1,8 @@
 name: abagon_dao
 version: 0.1.0
-author: eldardo.org
+author: www.eldardo.org
 description: A library to encapsulate DAO implementations so that changing underlying DB is not a pain.
+homepage: https://github.com/el-dardo/abagon_dao
 dev_dependencies:
   unittest: any
 
