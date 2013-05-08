@@ -50,7 +50,7 @@ void main() {
       _implementation = new MockDaoImplementation();
       closeAbagonDao();
       
-      _implementation.getLogs(callsTo("close")).verify(happenedOnce);
+      (_implementation as MockDaoImplementation).getLogs(callsTo("close")).verify(happenedOnce);
     });
 
   });
