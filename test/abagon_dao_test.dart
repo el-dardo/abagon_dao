@@ -11,10 +11,7 @@ part "../lib/src/api.dart";
 /// Mocks
 class MockDaoImplementation extends Mock implements DaoImplementation {}
 class NonAbstractDaoImplementation extends DaoImplementation {}
-class MockDao extends Mock implements Dao {
-  final DaoImplementation daoImpl;
-  MockDao(this.daoImpl);
-}
+class MockDao extends Mock implements Dao {}
 class MockEntity extends Mock implements ModelEntity {}
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -112,7 +109,11 @@ _generateRegisterClassArgs( int count ) {
   for( int i=0 ; i<count ; i++ ) {
     ret.add( new List() );
     ret[i].add( "$i" );
-    ret[i].add( (daoImpl)=>new MockDao(daoImpl) );
+    ret[i].add( (daoImpl) {
+      var dao = new MockDao();
+      dao.when(callsTo("get daoImpl")).alwaysReturn(daoImpl);
+      return dao;
+    } );
     ret[i].add( ()=>new MockEntity() );
     ret[i].add( ()=>new List<MockEntity>() );
   }  
