@@ -56,59 +56,59 @@ void main() {
     
     test( "get:entities returns all registered model entities", () {
       var impl = new NonAbstractDaoImplementation();
-      var argsList = _generateRegisterClassArgs(4);
+      var argsList = _generateRegisterClassArgs([MockEntity,String,int,bool]);
       _registerClasses(impl,argsList);
       
-      expect( impl.entities, unorderedEquals(["0","1","2","3"]) );
+      expect( impl.entities, unorderedEquals([MockEntity,String,int,bool]) );
     });
 
     test( "createDao() returns a Dao from registered generator", () {
       var impl = new NonAbstractDaoImplementation();
-      var argsList = _generateRegisterClassArgs(1);
+      var argsList = _generateRegisterClassArgs([MockEntity]);
       _registerClasses(impl,argsList);
       
-      expect( impl.createDao("0"), new isInstanceOf<MockDao>("MockDao") );
+      expect( impl.createDao(MockEntity), new isInstanceOf<MockDao>("MockDao") );
     });
 
     test( "createDao() passes its DaoImplementation to the constructed Dao", () {
       var impl = new NonAbstractDaoImplementation();
-      var argsList = _generateRegisterClassArgs(1);
+      var argsList = _generateRegisterClassArgs([MockEntity]);
       _registerClasses(impl,argsList);
       
-      MockDao dao = impl.createDao("0");
+      MockDao dao = impl.createDao(MockEntity);
       expect( dao.daoImpl, same(impl) );
     });
 
     test( "createEntity() returns a ModelEntity from registered entity generator", () {
       var impl = new NonAbstractDaoImplementation();
-      var argsList = _generateRegisterClassArgs(1);
+      var argsList = _generateRegisterClassArgs([MockEntity]);
       _registerClasses(impl,argsList);
       
-      expect( impl.createEntity("0"), new isInstanceOf<MockEntity>("MockEntity") );
+      expect( impl.createEntity(MockEntity), new isInstanceOf<MockEntity>("MockEntity") );
     });
 
     test( "createList() returns a correctly typed List from registered list generator", () {
       var impl = new NonAbstractDaoImplementation();
-      var argsList = _generateRegisterClassArgs(1);
+      var argsList = _generateRegisterClassArgs([MockEntity]);
       _registerClasses(impl,argsList);
       
-      expect( impl.createList("0"), new isInstanceOf<List<MockEntity>>("List<MockEntity>") );
+      expect( impl.createList(MockEntity), new isInstanceOf<List<MockEntity>>("List<MockEntity>") );
     });
 
   }); 
 }
 
-_registerClasses( DaoImplementation impl, List argsList ) {
+void _registerClasses( DaoImplementation impl, List argsList ) {
   for( var args in argsList ) {
     impl.registerClass( args[0], args[1], args[2], args[3] );
   }
 }
 
-_generateRegisterClassArgs( int count ) {
+List _generateRegisterClassArgs( List<Type> types ) {
   var ret = new List();
-  for( int i=0 ; i<count ; i++ ) {
+  for( int i=0 ; i<types.length ; i++ ) {
     ret.add( new List() );
-    ret[i].add( "$i" );
+    ret[i].add( types[i] );
     ret[i].add( (daoImpl) {
       var dao = new MockDao();
       dao.when(callsTo("get daoImpl")).alwaysReturn(daoImpl);

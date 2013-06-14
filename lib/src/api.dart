@@ -39,23 +39,23 @@ typedef Dao DaoGenerator( DaoImplementation daoImpl );
  * underlying database driver to be used.
  */
 abstract class DaoImplementation {
-  Map<String,DaoGenerator> _daoGenerators = new Map();
-  Map<String,ModelEntityGenerator> _modelEntityGenerators = new Map();
-  Map<String,ModelEntityListGenerator> _modelEntityListGenerators = new Map();
+  Map<Type,DaoGenerator> _daoGenerators = new Map();
+  Map<Type,ModelEntityGenerator> _modelEntityGenerators = new Map();
+  Map<Type,ModelEntityListGenerator> _modelEntityListGenerators = new Map();
 
-  void registerClass( String entityName, DaoGenerator daoGenerator, 
+  void registerClass( Type entityType, DaoGenerator daoGenerator, 
       ModelEntityGenerator entityGenerator, 
       ModelEntityListGenerator listGenerator ) {
-    _daoGenerators[entityName] = daoGenerator;
-    _modelEntityGenerators[entityName] = entityGenerator;
-    _modelEntityListGenerators[entityName] = listGenerator;
+    _daoGenerators[entityType] = daoGenerator;
+    _modelEntityGenerators[entityType] = entityGenerator;
+    _modelEntityListGenerators[entityType] = listGenerator;
   }
   
-  Iterable<String> get entities => _daoGenerators.keys;
+  Iterable<Type> get entities => _daoGenerators.keys;
   
-  List createList( String entity ) => _modelEntityListGenerators[entity]();
-  dynamic createEntity( String entity ) => _modelEntityGenerators[entity]();
-  Dao createDao( String entity ) => _daoGenerators[entity](this);
+  List createList( Type entityType ) => _modelEntityListGenerators[entityType]();
+  dynamic createEntity( Type entityType ) => _modelEntityGenerators[entityType]();
+  Dao createDao( Type entityType ) => _daoGenerators[entityType](this);
   
   Future init();
   Future close();
@@ -76,14 +76,24 @@ abstract class ModelEntity {
  * All DAO objects must implement this class
  */
 abstract class Dao<T extends ModelEntity> {
+  
+  /**
+   * Gets all [ModelEntity]s associated to this DAO.
+   */
   Future<List<T>> findAll();
+  
+  /**
+   * Gets a [ModelEntity] by id. Returns null if the instance does not exist.
+   */
   Future<T> getById( String id );
+  
   /**
    * Saves an existing [ModelEntity] or creates a new one in the database. The
    * behavior depends on the [entity]'s id being informed or not. The method
    * returns the id of the saved [entity] whether it was created or updated.
    */
   Future<String> save( T entity );
+  
   Future delete( T entity );
 }
 
